@@ -1,0 +1,7 @@
+node_modules
+dist
+dist-single
+.idea
+.DS_Store
+.claude/settings.local.json
+*.tsbuildinfo

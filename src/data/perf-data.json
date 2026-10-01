@@ -1,0 +1,50 @@
+{
+  "_readme": "Replace every value with numbers measured in your performance tests, then set \"placeholder\": false for that chart. Values below are TODO placeholders, not measurements.",
+  "insertTps": {
+    "placeholder": true,
+    "title": "Consumer throughput into PostgreSQL",
+    "unit": "msg/s",
+    "note": "Single consumer instance, same region as DB, 1 KB TradeEvent.",
+    "bars": [
+      { "label": "1 record, insert + commit per message", "value": 900 },
+      { "label": "1 record, insert, async offset commit", "value": 1400 },
+      { "label": "Batch 100, multi-row insert, 1 tx", "value": 9000 },
+      { "label": "Batch 100, executor (8 threads)", "value": 6500 }
+    ]
+  },
+  "indexImpact": {
+    "placeholder": true,
+    "title": "Insert throughput vs. index layout",
+    "unit": "rows/s",
+    "note": "trade_event table; unique (trade_id, version) is mandatory for idempotency.",
+    "bars": [
+      { "label": "PK only (bigint identity)", "value": 12000 },
+      { "label": "+ unique (trade_id, version)", "value": 10500 },
+      { "label": "+ unique on random UUID", "value": 7000 },
+      { "label": "+ 4 secondary reporting indexes", "value": 4200 }
+    ]
+  },
+  "regionLatency": {
+    "placeholder": true,
+    "title": "Per-message processing time by consumer ↔ DB placement",
+    "unit": "ms (p50)",
+    "note": "Each DB round trip pays the network RTT; a message typically needs 2–3 round trips.",
+    "bars": [
+      { "label": "Consumer + DB same zone", "value": 2 },
+      { "label": "Consumer + DB same region, cross-zone", "value": 4 },
+      { "label": "Consumer and DB in different regions", "value": 35 }
+    ]
+  },
+  "processingLatency": {
+    "placeholder": true,
+    "title": "Where time goes per message (from traces)",
+    "unit": "ms (p99)",
+    "note": "Read from App Insights spans: Kafka poll vs. DB vs. ADLS.",
+    "bars": [
+      { "label": "Kafka poll / deserialize", "value": 3 },
+      { "label": "Business validation", "value": 2 },
+      { "label": "PostgreSQL insert + commit", "value": 14 },
+      { "label": "ADLS archive write", "value": 48 }
+    ]
+  }
+}
